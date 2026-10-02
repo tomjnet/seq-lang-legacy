@@ -1,0 +1,8 @@
+FILE:3:1: error[E0209]: step 'step1' has no ask() statements
+    step step1():
+    ^
+    hint: add at least one indented ask("...") line
+FILE:6:9: error[E0316]: ask() prompt must not be empty
+        ask("")
+            ^
+seqc_legacy: 2 error(s) in FILE

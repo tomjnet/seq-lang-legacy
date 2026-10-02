@@ -1,0 +1,5 @@
+FILE:4:9: error[E0406]: no transactions to filter: no earlier request created a file
+        ask("for-each transaction get 3 top total-revenue-by-company")
+            ^
+    hint: add an earlier request: create file <file> with <N> <dataset>
+seqc_legacy: 1 error(s) in FILE

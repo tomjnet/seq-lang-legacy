@@ -1,0 +1,295 @@
+/* Seq Legacy Programming Language - site stylesheet */
+
+body {
+  margin: 0;
+  padding: 12px 0 20px 0;
+  background: #dfe8dc url(images/bg.gif);
+  color: #222222;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 11px;
+  line-height: 1.5;
+  text-align: center; /* centers the page table in old browsers */
+}
+
+a { color: #1a6b2c; }
+a:visited { color: #4d6652; }
+a:hover { color: #cc5500; text-decoration: none; }
+
+img { border: 0; max-width: 100%; height: auto; }
+
+/* ---- page frame ---- */
+
+table#page {
+  width: 100%;
+  max-width: 770px;
+  margin: 0 auto;
+  background: #ffffff;
+  border: 1px solid #5f7f63;
+  text-align: left;
+}
+
+td { vertical-align: top; font-size: 11px; }
+
+/* ---- header ---- */
+
+td#header {
+  padding: 8px 14px 6px 14px;
+  background: #ffffff;
+  border-bottom: 1px solid #5f7f63;
+}
+
+td#header table { width: 100%; }
+
+td#tagline {
+  vertical-align: bottom;
+  text-align: right;
+  color: #4d6652;
+  font-size: 10px;
+  padding-bottom: 6px;
+}
+
+td#tagline b {
+  display: block;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 14px;
+  color: #0b4a1c;
+}
+
+/* ---- top navigation bar ---- */
+
+td#topnav {
+  padding: 0;
+  background: #1f6a31;
+  background: linear-gradient(#3f9a55, #15552a);
+  border-bottom: 1px solid #0b3a16;
+}
+
+td#topnav a {
+  float: left;
+  display: block;
+  padding: 5px 13px 6px 13px;
+  color: #ffffff;
+  font-weight: bold;
+  text-decoration: none;
+  border-right: 1px solid #0b3a16;
+  border-left: 1px solid #5cb372;
+}
+
+td#topnav a:hover { background: #0e4420; color: #ffe89a; }
+td#topnav a.here { background: #0b3a16; color: #ffe89a; }
+
+/* ---- sidebar ---- */
+
+td#sidebar {
+  width: 180px;
+  padding: 10px 8px 14px 10px;
+  background: #f1f6ef;
+  border-right: 1px solid #c3d3c1;
+}
+
+div.box {
+  margin: 0 0 10px 0;
+  border: 1px solid #7a9a7e;
+  background: #ffffff;
+}
+
+div.box h3 {
+  margin: 0;
+  padding: 3px 6px;
+  background: #2d7d42;
+  background: linear-gradient(#4aa461, #1f6a31);
+  color: #ffffff;
+  font-size: 11px;
+}
+
+div.box ul {
+  margin: 0;
+  padding: 4px 0;
+  list-style: none;
+}
+
+div.box li { margin: 0; padding: 0; }
+
+div.box li a {
+  display: block;
+  padding: 2px 6px 2px 16px;
+  background: url(images/arrow.gif) no-repeat 6px 7px;
+  text-decoration: none;
+}
+
+div.box li a:hover { background-color: #e3efe0; }
+
+div.box p { margin: 0; padding: 6px; font-size: 10px; }
+
+div.box tt { font-size: 10px; white-space: nowrap; }
+
+/* ---- content ---- */
+
+td#content { padding: 12px 16px 18px 16px; }
+
+h1 {
+  margin: 0 0 10px 0;
+  padding: 0 0 3px 0;
+  border-bottom: 2px solid #2d7d42;
+  color: #0b4a1c;
+  font-family: "Trebuchet MS", Verdana, sans-serif;
+  font-size: 20px;
+}
+
+h2 {
+  margin: 18px 0 6px 0;
+  padding: 2px 6px;
+  background: #e3efe0;
+  border-left: 4px solid #2d7d42;
+  color: #0b4a1c;
+  font-size: 13px;
+}
+
+p { margin: 0 0 9px 0; }
+
+ul.plain, ol.plain { margin: 0 0 9px 0; padding-left: 22px; }
+
+tt, code, pre { font-family: "Courier New", Courier, monospace; font-size: 12px; }
+
+pre {
+  margin: 0 0 10px 0;
+  padding: 7px 9px;
+  background: #fbfbee;
+  border: 1px dashed #a8b58a;
+  color: #111111;
+  line-height: 1.3;
+  overflow: auto;
+}
+
+pre.console {
+  background: #101810;
+  border: 1px solid #000000;
+  color: #7dff8a;
+}
+
+pre .k { color: #0000aa; font-weight: bold; }  /* keyword */
+pre .s { color: #a31515; }                     /* string  */
+pre .c { color: #557755; font-style: italic; } /* comment */
+
+div.note {
+  margin: 0 0 10px 0;
+  padding: 6px 8px 6px 8px;
+  background: #fff8d6;
+  border: 1px solid #e0c860;
+}
+
+div.note b { color: #8a5a00; }
+
+table.data {
+  width: 100%;
+  margin: 0 0 10px 0;
+  border-collapse: collapse;
+}
+
+table.data th {
+  padding: 3px 6px;
+  background: #2d7d42;
+  border: 1px solid #1f5a30;
+  color: #ffffff;
+  text-align: left;
+  font-size: 11px;
+}
+
+table.data td {
+  padding: 3px 6px;
+  border: 1px solid #c3d3c1;
+}
+
+table.data tr.odd td { background: #f4f8f2; }
+
+/* ---- footer ---- */
+
+td#footer {
+  padding: 8px 14px 10px 14px;
+  background: #f1f6ef;
+  border-top: 1px solid #5f7f63;
+  color: #5a6b5c;
+  font-size: 10px;
+  text-align: center;
+}
+
+span.badge {
+  display: inline-block;
+  margin: 0 2px 5px 2px;
+  border: 1px solid #333333;
+  background: #ffffff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 9px;
+  line-height: 13px;
+  white-space: nowrap;
+}
+
+span.badge b {
+  display: inline-block;
+  padding: 0 4px;
+  background: #2d7d42;
+  border: 1px solid #ffffff;
+  color: #ffffff;
+  font-weight: normal;
+}
+
+span.badge i {
+  display: inline-block;
+  padding: 0 5px;
+  color: #222222;
+  font-style: normal;
+}
+
+span.badge b.orange { background: #ff6600; }
+span.badge b.blue { background: #2a5db0; }
+span.badge b.gray { background: #666666; }
+
+/* ---- small screens: the layout table becomes a single column ---- */
+
+@media (max-width: 800px) {
+  body { padding: 0; font-size: 13px; }
+  td { font-size: 13px; }
+
+  table#page,
+  table#page > tbody,
+  table#page > tbody > tr > td,
+  td#header table,
+  td#header tbody,
+  td#header tr,
+  td#header td {
+    display: block;
+    width: auto;
+  }
+
+  table#page { border-width: 0 0 1px 0; }
+
+  /* content first, sidebar underneath */
+  table#page > tbody > tr { display: flex; flex-direction: column; }
+  td#content { order: 1; padding: 12px 12px 16px 12px; }
+  td#sidebar {
+    order: 2;
+    padding: 10px 12px 4px 12px;
+    border-right: 0;
+    border-top: 1px solid #c3d3c1;
+  }
+
+  td#header { padding: 8px 12px; text-align: center; }
+  td#tagline { text-align: center; padding: 2px 0 0 0; font-size: 11px; }
+
+  td#topnav { overflow: hidden; }
+  td#topnav a { padding: 8px 11px; font-size: 12px; }
+
+  div.box h3 { font-size: 12px; }
+  div.box p { font-size: 12px; }
+  div.box tt { font-size: 12px; }
+  div.box li a { padding: 6px 6px 6px 16px; background-position: 6px 13px; }
+
+  h1 { font-size: 19px; }
+  h2 { font-size: 14px; }
+  pre { font-size: 12px; }
+
+  table.data th, table.data td { font-size: 12px; overflow-wrap: anywhere; }
+  table.data th[width] { width: auto; }
+
+  td#footer { font-size: 11px; }
+}

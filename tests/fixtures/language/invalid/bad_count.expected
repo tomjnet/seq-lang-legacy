@@ -1,0 +1,21 @@
+FILE:4:9: error[E0404]: count 'five' is not a number
+        ask("create file a.txt with five sample-company-transaction-db")
+            ^
+    hint: write a whole number such as 5
+FILE:5:9: error[E0404]: count 0 is out of range: sample-company-transaction-db has 500 rows
+        ask("create file b.txt with 0 sample-company-transaction-db")
+            ^
+    hint: use a count from 1 to 500
+FILE:6:9: error[E0404]: count 501 is out of range: sample-company-transaction-db has 500 rows
+        ask("create file c.txt with 501 sample-company-transaction-db")
+            ^
+    hint: use a count from 1 to 500
+FILE:9:9: error[E0404]: count 0 is out of range
+        ask("for-each transaction get 0 top total-revenue-by-company")
+            ^
+    hint: use a count from 1 to 100
+FILE:10:9: error[E0404]: count '3.5' is not a number
+        ask("for-each transaction get 3.5 top total-revenue-by-company")
+            ^
+    hint: write a whole number such as 5
+seqc_legacy: 5 error(s) in FILE

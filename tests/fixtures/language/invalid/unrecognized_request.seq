@@ -1,0 +1,5 @@
+name = "demo"
+
+step step1():
+    ask("make me a sandwich")
+    ask("for-each company get 3 top total-revenue-by-company")

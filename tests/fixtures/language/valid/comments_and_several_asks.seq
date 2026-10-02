@@ -1,0 +1,11 @@
+# The name comes before the first step.
+name = "notes_demo-1"   # letters, digits, underscores and hyphens
+
+step load():
+    # A step may hold several requests; they run in order.
+    ask("create file first.txt with 1 sample-company-transaction-db")
+    ask("create file all_rows.txt with 500 sample-company-transaction-db")
+
+step report():
+    ask("for-each transaction get 1 top total-revenue-by-company")
+    ask("for-each transaction get 10 top total-revenue-by-company")

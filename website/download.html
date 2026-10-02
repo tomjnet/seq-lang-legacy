@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Download &amp; Build - Seq Legacy Programming Language</title>
+<link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+<body>
+
+<table id="page" cellspacing="0" cellpadding="0" border="0" align="center">
+<tr>
+<td id="header" colspan="2">
+  <table cellspacing="0" cellpadding="0" border="0">
+  <tr>
+    <td><a href="index.html"><img src="images/seq-logo.png" width="340" height="170" alt="Legacy Seq Programming Language" /></a></td>
+    <td id="tagline"><b>main.seq -&gt; ELF</b>No language model. No GCC. No <tt>as</tt>. No <tt>ld</tt>.</td>
+  </tr>
+  </table>
+</td>
+</tr>
+<tr>
+<td id="topnav" colspan="2">
+  <a href="index.html">Home</a>
+  <a href="language.html">The Language</a>
+  <a href="compiler.html">The Compiler</a>
+  <a href="download.html" class="here">Download &amp; Build</a>
+</td>
+</tr>
+<tr>
+<td id="sidebar">
+
+  <div class="box">
+    <h3>Navigation</h3>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="language.html">The Language</a></li>
+      <li><a href="compiler.html">The Compiler</a></li>
+      <li><a href="download.html">Download &amp; Build</a></li>
+    </ul>
+  </div>
+
+  <div class="box">
+    <h3>On this page</h3>
+    <ul>
+      <li><a href="#need">What you need</a></li>
+      <li><a href="#build">Build</a></li>
+      <li><a href="#install">Install</a></li>
+      <li><a href="#first">Your first project</a></li>
+    </ul>
+  </div>
+
+  <div class="box">
+    <h3>Requirements</h3>
+    <p>Linux or WSL<br />
+    A C++11 compiler<br />
+    CMake 3.20 or newer<br />
+    Ninja</p>
+  </div>
+
+</td>
+<td id="content">
+
+  <h1>Download &amp; Build</h1>
+
+  <p>Seq Legacy is distributed as source code. There are no binary packages:
+  you build <tt>seqc_legacy</tt> yourself, which takes a few seconds.</p>
+
+  <a name="need"></a>
+  <h2>What you need</h2>
+
+  <p><tt>seqc_legacy</tt> itself is a C++11 program built with CMake and
+  Ninja; it uses nothing from a later standard and has no third-party
+  dependencies. A host compiler (g++ or clang++) is needed only to build the
+  compiler, never to compile a <tt>.seq</tt> file.</p>
+
+  <div class="note"><b>Windows users:</b> the run stage executes a Linux
+  binary, so build and test on Linux or in WSL.</div>
+
+  <a name="build"></a>
+  <h2>Build</h2>
+
+  <p>From the root of the source tree:</p>
+
+<pre class="console">$ cmake --preset dev
+$ cmake --build --preset dev
+$ ctest --preset dev</pre>
+
+  <p>The compiler is <tt>build/dev/seqc_legacy</tt>.</p>
+
+  <a name="install"></a>
+  <h2>Install</h2>
+
+  <p>The install script copies the compiler to <tt>/usr/local/bin</tt>. It
+  uses <tt>sudo</tt>, so it will ask for your password.</p>
+
+<pre class="console">$ bash install-seqc.sh</pre>
+
+  <a name="first"></a>
+  <h2>Your first project</h2>
+
+<pre class="console">$ seqc_legacy new top3Company
+Seq Legacy Compiler
+
+Creating project: top3Company
+
+[create] top3Company/
+[create] top3Company/src/
+[create] top3Company/src/main.seq
+[create] top3Company/output/
+
+Target: Linux x86_64
+
+Project created successfully.
+
+Next:
+  cd top3Company
+  seqc_legacy src/main.seq</pre>
+
+  <p>Then do what it says:</p>
+
+<pre class="console">$ cd top3Company
+$ seqc_legacy src/main.seq</pre>
+
+  <p>The source file must be <tt>&lt;project&gt;/src/main.seq</tt>. Each
+  build overwrites the previous artifacts and outputs. Now go and
+  <a href="language.html">read about the language</a>, or see
+  <a href="compiler.html">how the compiler works</a>.</p>
+
+</td>
+</tr>
+<tr>
+<td id="footer" colspan="2">
+  <span class="badge"><b class="orange">XHTML</b><i>1.0</i></span>
+  <span class="badge"><b class="blue">CSS</b><i>2.0</i></span>
+  <span class="badge"><b>LINUX</b><i>x86-64</i></span>
+  <span class="badge"><b class="gray">GCC</b><i>not needed</i></span>
+  <br />
+  Copyright &copy; 2005-2006 Tom J. All rights reserved.<br />
+  Seq Legacy Programming Language &middot; Best viewed at 1024x768 or higher.
+</td>
+</tr>
+</table>
+
+</body>
+</html>

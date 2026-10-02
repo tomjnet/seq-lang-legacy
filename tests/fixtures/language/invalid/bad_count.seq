@@ -1,0 +1,10 @@
+name = "demo"
+
+step step1():
+    ask("create file a.txt with five sample-company-transaction-db")
+    ask("create file b.txt with 0 sample-company-transaction-db")
+    ask("create file c.txt with 501 sample-company-transaction-db")
+
+step step2():
+    ask("for-each transaction get 0 top total-revenue-by-company")
+    ask("for-each transaction get 3.5 top total-revenue-by-company")

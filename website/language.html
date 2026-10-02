@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>The Language - Seq Legacy Programming Language</title>
+<link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+<body>
+
+<table id="page" cellspacing="0" cellpadding="0" border="0" align="center">
+<tr>
+<td id="header" colspan="2">
+  <table cellspacing="0" cellpadding="0" border="0">
+  <tr>
+    <td><a href="index.html"><img src="images/seq-logo.png" width="340" height="170" alt="Legacy Seq Programming Language" /></a></td>
+    <td id="tagline"><b>main.seq -&gt; ELF</b>No language model. No GCC. No <tt>as</tt>. No <tt>ld</tt>.</td>
+  </tr>
+  </table>
+</td>
+</tr>
+<tr>
+<td id="topnav" colspan="2">
+  <a href="index.html">Home</a>
+  <a href="language.html" class="here">The Language</a>
+  <a href="compiler.html">The Compiler</a>
+  <a href="download.html">Download &amp; Build</a>
+</td>
+</tr>
+<tr>
+<td id="sidebar">
+
+  <div class="box">
+    <h3>Navigation</h3>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="language.html">The Language</a></li>
+      <li><a href="compiler.html">The Compiler</a></li>
+      <li><a href="download.html">Download &amp; Build</a></li>
+    </ul>
+  </div>
+
+  <div class="box">
+    <h3>On this page</h3>
+    <ul>
+      <li><a href="#grammar">Grammar</a></li>
+      <li><a href="#lexical">Lexical rules</a></li>
+      <li><a href="#requests">Requests</a></li>
+      <li><a href="#dataset">Built-in dataset</a></li>
+      <li><a href="#filter">Built-in filter</a></li>
+      <li><a href="#errors">Error messages</a></li>
+    </ul>
+  </div>
+
+  <div class="box">
+    <h3>Keywords</h3>
+    <p><tt>name</tt> &nbsp; <tt>step</tt> &nbsp; <tt>ask</tt><br />
+    That is all of them.</p>
+  </div>
+
+</td>
+<td id="content">
+
+  <h1>The Language</h1>
+
+  <p>The legacy subset of Seq is deliberately tiny. A source file declares a
+  program name, then one or more steps, and every step contains one or more
+  <tt>ask</tt> statements.</p>
+
+  <a name="grammar"></a>
+  <h2>Grammar</h2>
+
+<pre>file      := name_decl step+
+name_decl := "name" "=" STRING
+step      := "step" IDENT "(" ")" ":" NEWLINE
+             ( 4 spaces "ask" "(" STRING ")" NEWLINE )+</pre>
+
+  <a name="lexical"></a>
+  <h2>Lexical rules</h2>
+
+  <table class="data" cellspacing="0">
+  <tr><th width="90">Rule</th><th>Contract</th></tr>
+  <tr><td>Keywords</td><td><tt>name</tt>, <tt>step</tt> and <tt>ask</tt> are identifiers compared by text, not separate tokens</td></tr>
+  <tr class="odd"><td>Indentation</td><td>Exactly 0 spaces (declaration, step header) or 4 spaces (<tt>ask</tt>); tabs are an error</td></tr>
+  <tr><td>Strings</td><td>Double-quoted, single line, escapes <tt>\"</tt> <tt>\\</tt> <tt>\n</tt> <tt>\t</tt></td></tr>
+  <tr class="odd"><td>Comments</td><td><tt>#</tt> to end of line, except inside a string</td></tr>
+  <tr><td>Encoding</td><td>UTF-8; one BOM skipped; CRLF read as LF</td></tr>
+  <tr class="odd"><td>Name</td><td><tt>[A-Za-z_][A-Za-z0-9_-]*</tt>, at most 64 characters</td></tr>
+  <tr><td>Limits</td><td>Source 1 MiB, prompt 4096 bytes, 64 steps, 16 asks per step</td></tr>
+  </table>
+
+  <a name="requests"></a>
+  <h2>Requests</h2>
+
+  <p>The text of an <tt>ask</tt> is split on single spaces and must match one
+  of two patterns exactly. Only the parts in angle brackets may vary.</p>
+
+  <table class="data" cellspacing="0">
+  <tr><th>Request</th><th>Meaning</th></tr>
+  <tr><td><tt>create file &lt;file&gt; with &lt;N&gt; &lt;dataset&gt;</tt></td><td>Write the first N rows of the dataset to <tt>output/&lt;file&gt;</tt></td></tr>
+  <tr class="odd"><td><tt>for-each transaction get &lt;N&gt; top &lt;filter&gt;</tt></td><td>Apply the filter to the rows of the most recent file and print the top N</td></tr>
+  </table>
+
+  <table class="data" cellspacing="0">
+  <tr><th width="150">Part</th><th>Rule</th></tr>
+  <tr><td><tt>&lt;file&gt;</tt></td><td><tt>[A-Za-z0-9_][A-Za-z0-9_.-]*</tt>, at most 64 characters, no path separators</td></tr>
+  <tr class="odd"><td><tt>&lt;N&gt;</tt> in <tt>create file</tt></td><td>Decimal, 1 to the number of rows in the dataset (500)</td></tr>
+  <tr><td><tt>&lt;N&gt;</tt> in <tt>for-each</tt></td><td>Decimal, 1 to 100; if N is larger than the number of companies, all companies are printed</td></tr>
+  <tr class="odd"><td><tt>&lt;dataset&gt;</tt></td><td>Name of a built-in dataset</td></tr>
+  <tr><td><tt>&lt;filter&gt;</tt></td><td>Name of a built-in filter</td></tr>
+  </table>
+
+  <a name="dataset"></a>
+  <h2>Built-in dataset: sample-company-transaction-db</h2>
+
+  <p>500 rows of <tt>company,quantity,price</tt>, embedded into the compiler
+  when it is built. There is no header, and there are ten companies: ACME,
+  Globex, Initech, Umbrella, Hooli, Stark, Wayne, Wonka, Cyberdyne and
+  Soylent. The first ten rows are:</p>
+
+<pre>ACME,10,25.50
+Globex,4,120.00
+Initech,30,9.75
+ACME,5,26.00
+Umbrella,2,40.00
+Globex,2,118.50
+Hooli,12,33.25
+Initech,8,10.00
+Umbrella,15,41.20
+Hooli,3,34.00</pre>
+
+  <a name="filter"></a>
+  <h2>Built-in filter: total-revenue-by-company</h2>
+
+  <p>The revenue of a company is the sum of quantity &times; price over its
+  rows, highest first. Equal revenue keeps first-appearance order. The
+  arithmetic is done in integer cents; there is no floating point.</p>
+
+  <table class="data" cellspacing="0">
+  <tr><th>Program</th><th><tt>company.txt</tt></th><th>Printed</th></tr>
+  <tr><td>5 rows, top 3</td><td>rows 1-5</td><td>Globex 480.00, ACME 385.00, Initech 292.50</td></tr>
+  <tr class="odd"><td>5 rows, top 2</td><td>rows 1-5</td><td>Globex 480.00, ACME 385.00</td></tr>
+  <tr><td>10 rows, top 3</td><td>rows 1-10</td><td>Globex 717.00, Umbrella 698.00, Hooli 501.00</td></tr>
+  </table>
+
+  <a name="errors"></a>
+  <h2>Error messages</h2>
+
+  <p>The compiler points at the place it did not understand, and one run
+  reports every error it finds in the file:</p>
+
+<pre class="console">src/main.seq:4:9: error[E0401]: unrecognized request
+        ask("make me a sandwich")
+            ^
+    hint: supported: create file &lt;file&gt; with &lt;N&gt; &lt;dataset&gt;
+seqc_legacy: 1 error(s) in src/main.seq</pre>
+
+  <table class="data" cellspacing="0">
+  <tr><th width="60">Code</th><th>Meaning</th></tr>
+  <tr><td>E0401</td><td>Request matches no known pattern</td></tr>
+  <tr class="odd"><td>E0402</td><td>Unknown dataset</td></tr>
+  <tr><td>E0403</td><td>Unknown filter</td></tr>
+  <tr class="odd"><td>E0404</td><td>Count is not a number or is out of range</td></tr>
+  <tr><td>E0405</td><td>Invalid file name</td></tr>
+  <tr class="odd"><td>E0406</td><td><tt>for-each</tt> request with no earlier <tt>create file</tt> request</td></tr>
+  <tr><td>E0407</td><td><tt>model(...)</tt> or <tt>backend.X()</tt> is not supported in seqc_legacy</td></tr>
+  </table>
+
+</td>
+</tr>
+<tr>
+<td id="footer" colspan="2">
+  <span class="badge"><b class="orange">XHTML</b><i>1.0</i></span>
+  <span class="badge"><b class="blue">CSS</b><i>2.0</i></span>
+  <span class="badge"><b>LINUX</b><i>x86-64</i></span>
+  <span class="badge"><b class="gray">GCC</b><i>not needed</i></span>
+  <br />
+  Copyright &copy; 2005-2006 Tom J. All rights reserved.<br />
+  Seq Legacy Programming Language &middot; Best viewed at 1024x768 or higher.
+</td>
+</tr>
+</table>
+
+</body>
+</html>

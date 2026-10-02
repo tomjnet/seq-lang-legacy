@@ -1,0 +1,5 @@
+FILE:6:6: error[E0315]: duplicate step name 'load'
+    step load():
+         ^
+    hint: first declared on line 3
+seqc_legacy: 1 error(s) in FILE

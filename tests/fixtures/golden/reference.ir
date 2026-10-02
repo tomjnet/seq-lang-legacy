@@ -1,0 +1,8 @@
+program top3Company
+data d0 = "company.txt\0"
+data d1 = 76 bytes  ; rows 1-5 of sample-company-transaction-db
+data d2 = 82 bytes  ; top 3 of total-revenue-by-company
+step 1 step1:
+  write_file d0, d1
+step 2 step2:
+  print d2

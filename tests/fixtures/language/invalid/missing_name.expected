@@ -1,0 +1,5 @@
+FILE:1:1: error[E0303]: missing required name declaration
+    step step1():
+    ^
+    hint: add name = "project_name"
+seqc_legacy: 1 error(s) in FILE

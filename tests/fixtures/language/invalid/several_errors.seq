@@ -1,0 +1,18 @@
+name "broken"
+name = "ok"
+
+step step1()
+    ask("create file a.txt with 5 sample-company-transaction-db")
+
+step step2(x):
+    ask("for-each transaction get 3 top total-revenue-by-company")
+
+step step3():
+    ask "no parentheses"
+    print("hello")
+      ask("create file b.txt with 5 sample-company-transaction-db")
+
+step step():
+    ask("create file c.txt with 5 sample-company-transaction-db")
+
+ask("create file d.txt with 5 sample-company-transaction-db")

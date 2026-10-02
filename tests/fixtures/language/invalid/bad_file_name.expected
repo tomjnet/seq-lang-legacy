@@ -1,0 +1,9 @@
+FILE:4:9: error[E0405]: invalid file name '../company.txt'
+        ask("create file ../company.txt with 5 sample-company-transaction-db")
+            ^
+    hint: use letters, digits, '_', '.' and '-', at most 64 characters, starting with a letter, digit or '_'
+FILE:5:9: error[E0405]: invalid file name '.hidden'
+        ask("create file .hidden with 5 sample-company-transaction-db")
+            ^
+    hint: use letters, digits, '_', '.' and '-', at most 64 characters, starting with a letter, digit or '_'
+seqc_legacy: 2 error(s) in FILE

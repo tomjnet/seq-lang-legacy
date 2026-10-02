@@ -1,0 +1,5 @@
+FILE:7:9: error[E0403]: unknown filter 'average-price-by-company'
+        ask("for-each transaction get 3 top average-price-by-company")
+            ^
+    hint: known filters: total-revenue-by-company
+seqc_legacy: 1 error(s) in FILE

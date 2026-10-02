@@ -1,0 +1,6 @@
+name = "demo"
+
+step step1():
+
+step step2():
+    ask("")

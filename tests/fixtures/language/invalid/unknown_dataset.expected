@@ -1,0 +1,5 @@
+FILE:4:9: error[E0402]: unknown dataset 'sample-stock-db'
+        ask("create file company.txt with 5 sample-stock-db")
+            ^
+    hint: known datasets: sample-company-transaction-db
+seqc_legacy: 1 error(s) in FILE

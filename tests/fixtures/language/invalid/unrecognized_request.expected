@@ -1,0 +1,9 @@
+FILE:4:9: error[E0401]: unrecognized request
+        ask("make me a sandwich")
+            ^
+    hint: supported: create file <file> with <N> <dataset>
+FILE:5:9: error[E0401]: unrecognized request
+        ask("for-each company get 3 top total-revenue-by-company")
+            ^
+    hint: supported: for-each transaction get <N> top <filter>
+seqc_legacy: 2 error(s) in FILE

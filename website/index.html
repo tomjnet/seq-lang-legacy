@@ -1,0 +1,170 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Seq Legacy Programming Language</title>
+<meta name="description" content="seqc_legacy: a proof-of-concept compiler for a small subset of the Seq language, with its own code generator, assembler and linker." />
+<link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+<body>
+
+<table id="page" cellspacing="0" cellpadding="0" border="0" align="center">
+<tr>
+<td id="header" colspan="2">
+  <table cellspacing="0" cellpadding="0" border="0">
+  <tr>
+    <td><a href="index.html"><img src="images/seq-logo.png" width="340" height="170" alt="Legacy Seq Programming Language" /></a></td>
+    <td id="tagline"><b>main.seq -&gt; ELF</b>No language model. No GCC. No <tt>as</tt>. No <tt>ld</tt>.</td>
+  </tr>
+  </table>
+</td>
+</tr>
+<tr>
+<td id="topnav" colspan="2">
+  <a href="index.html" class="here">Home</a>
+  <a href="language.html">The Language</a>
+  <a href="compiler.html">The Compiler</a>
+  <a href="download.html">Download &amp; Build</a>
+</td>
+</tr>
+<tr>
+<td id="sidebar">
+
+  <div class="box">
+    <h3>Navigation</h3>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="language.html">The Language</a></li>
+      <li><a href="compiler.html">The Compiler</a></li>
+      <li><a href="download.html">Download &amp; Build</a></li>
+    </ul>
+  </div>
+
+  <div class="box">
+    <h3>On this page</h3>
+    <ul>
+      <li><a href="#what">What is it?</a></li>
+      <li><a href="#hello">A first program</a></li>
+      <li><a href="#commands">Commands</a></li>
+      <li><a href="#limits">Limits</a></li>
+    </ul>
+  </div>
+
+  <div class="box">
+    <h3>Current version</h3>
+    <p><b>seqc_legacy 0.1.0</b><br />
+    Proof of concept<br />
+    Written in C++11<br />
+    Target: Linux x86-64</p>
+  </div>
+
+  <div class="box">
+    <h3>Quick start</h3>
+    <p><tt>seqc_legacy new hello</tt><br />
+    <tt>cd hello</tt><br />
+    <tt>seqc_legacy src/main.seq</tt></p>
+  </div>
+
+</td>
+<td id="content">
+
+  <h1>Welcome to Seq Legacy</h1>
+
+  <a name="what"></a>
+  <p><tt>seqc_legacy</tt> is a proof-of-concept compiler for a small subset of
+  the <b>Seq</b> language. It turns <tt>main.seq</tt> into a static Linux
+  x86-64 executable using only its own code: its own code generator, its own
+  assembler and its own linker.</p>
+
+  <div class="note"><b>Nothing else is started.</b> The whole build and run
+  succeed with an empty <tt>PATH</tt>. There is no language model, no GCC, no
+  external assembler and no external linker anywhere in the pipeline.</div>
+
+  <a name="hello"></a>
+  <h2>A first program</h2>
+
+  <p>A Seq program has a name and one or more <i>steps</i>. Each step
+  <tt>ask</tt>s for something to be done. This is <tt>src/main.seq</tt>, the
+  file that <tt>seqc_legacy new top3Company</tt> writes for you:</p>
+
+<pre><span class="k">name</span> = <span class="s">"top3Company"</span>
+
+<span class="k">step</span> step1():
+    <span class="k">ask</span>(<span class="s">"create file company.txt with 5 sample-company-transaction-db"</span>)
+
+<span class="k">step</span> step2():
+    <span class="k">ask</span>(<span class="s">"for-each transaction get 3 top total-revenue-by-company"</span>)</pre>
+
+  <p>Compile and run it:</p>
+
+<pre class="console">$ seqc_legacy src/main.seq
+Seq Legacy Compiler
+
+[lex] src/main.seq
+[parse] 1 name, 2 steps
+[sema] 2 requests
+[ir] output/temp/top3Company.ir
+[codegen] output/temp/top3Company.asm
+[assemble] output/temp/top3Company.lst
+[link] output/temp/top3Company.bin
+[run] top3Company.bin
+Top 3 total-revenue-by-company:
+1. Globex 480.00
+2. ACME 385.00
+3. Initech 292.50
+[run] exit 0
+
+Results:
+  output/company.txt</pre>
+
+  <p>Change <tt>5</tt> to <tt>10</tt> and <tt>company.txt</tt> gets ten rows;
+  change <tt>3</tt> to <tt>2</tt> and two companies are printed.
+  <a href="language.html">Read more about the language &raquo;</a></p>
+
+  <a name="commands"></a>
+  <h2>Commands</h2>
+
+  <table class="data" cellspacing="0">
+  <tr><th>Command</th><th>Does</th></tr>
+  <tr><td><tt>seqc_legacy new &lt;name&gt;</tt></td><td>Create a project in <tt>./&lt;name&gt;</tt></td></tr>
+  <tr class="odd"><td><tt>seqc_legacy &lt;file.seq&gt;</tt></td><td>Check, build, run, list the results</td></tr>
+  <tr><td><tt>seqc_legacy --build-only &lt;file.seq&gt;</tt></td><td>Stop after the linker</td></tr>
+  <tr class="odd"><td><tt>seqc_legacy check &lt;file.seq&gt;</tt></td><td>Lexer, parser and semantic analysis only</td></tr>
+  <tr><td><tt>seqc_legacy --help</tt>, <tt>--version</tt></td><td>Usage, version</td></tr>
+  </table>
+
+  <p>Exit codes: <b>0</b> success, <b>1</b> internal error, <b>2</b> usage,
+  <b>3</b> source error, <b>6</b> the program failed, <b>7</b> filesystem.</p>
+
+  <a name="limits"></a>
+  <h2>Limits of the proof of concept</h2>
+
+  <ul class="plain">
+    <li>Linux x86-64 only. On other systems <tt>seqc_legacy</tt> still builds
+    and <tt>--build-only</tt> still writes the ELF file, but it cannot run
+    it.</li>
+    <li>The assembler knows nine instructions and the eight low registers.
+    See the <a href="compiler.html#encodings">encoding table</a>.</li>
+    <li>The executable is one read-and-execute segment with no section
+    headers, so <tt>objdump -d</tt> shows nothing; read
+    <tt>output/temp/&lt;name&gt;.lst</tt> instead.</li>
+  </ul>
+
+</td>
+</tr>
+<tr>
+<td id="footer" colspan="2">
+  <span class="badge"><b class="orange">XHTML</b><i>1.0</i></span>
+  <span class="badge"><b class="blue">CSS</b><i>2.0</i></span>
+  <span class="badge"><b>LINUX</b><i>x86-64</i></span>
+  <span class="badge"><b class="gray">GCC</b><i>not needed</i></span>
+  <br />
+  Copyright &copy; 2005-2006 Tom J. All rights reserved.<br />
+  Seq Legacy Programming Language &middot; Best viewed at 1024x768 or higher.
+</td>
+</tr>
+</table>
+
+</body>
+</html>

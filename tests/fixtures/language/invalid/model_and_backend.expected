@@ -1,0 +1,9 @@
+FILE:1:1: error[E0407]: 'model' is not supported in seqc_legacy
+    model("https://huggingface.co/Qwen/Qwen2.5-Coder-1.5B-Instruct")
+    ^
+    hint: remove this line; seqc_legacy has no language model and no backend selection
+FILE:2:1: error[E0407]: 'backend' is not supported in seqc_legacy
+    backend.C()
+    ^
+    hint: remove this line; seqc_legacy has no language model and no backend selection
+seqc_legacy: 2 error(s) in FILE

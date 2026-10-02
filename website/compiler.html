@@ -1,0 +1,246 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>The Compiler - Seq Legacy Programming Language</title>
+<link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+<body>
+
+<table id="page" cellspacing="0" cellpadding="0" border="0" align="center">
+<tr>
+<td id="header" colspan="2">
+  <table cellspacing="0" cellpadding="0" border="0">
+  <tr>
+    <td><a href="index.html"><img src="images/seq-logo.png" width="340" height="170" alt="Legacy Seq Programming Language" /></a></td>
+    <td id="tagline"><b>main.seq -&gt; ELF</b>No language model. No GCC. No <tt>as</tt>. No <tt>ld</tt>.</td>
+  </tr>
+  </table>
+</td>
+</tr>
+<tr>
+<td id="topnav" colspan="2">
+  <a href="index.html">Home</a>
+  <a href="language.html">The Language</a>
+  <a href="compiler.html" class="here">The Compiler</a>
+  <a href="download.html">Download &amp; Build</a>
+</td>
+</tr>
+<tr>
+<td id="sidebar">
+
+  <div class="box">
+    <h3>Navigation</h3>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="language.html">The Language</a></li>
+      <li><a href="compiler.html">The Compiler</a></li>
+      <li><a href="download.html">Download &amp; Build</a></li>
+    </ul>
+  </div>
+
+  <div class="box">
+    <h3>On this page</h3>
+    <ul>
+      <li><a href="#stages">The eight stages</a></li>
+      <li><a href="#ir">Intermediate form</a></li>
+      <li><a href="#asm">Generated assembly</a></li>
+      <li><a href="#encodings">Encoding table</a></li>
+      <li><a href="#elf">ELF layout</a></li>
+      <li><a href="#files">Files it writes</a></li>
+    </ul>
+  </div>
+
+  <div class="box">
+    <h3>Pipeline</h3>
+    <p><tt>main.seq</tt><br />
+    &nbsp;&darr; lexer<br />
+    &nbsp;&darr; parser<br />
+    &nbsp;&darr; sema<br />
+    &nbsp;&darr; IR<br />
+    &nbsp;&darr; codegen<br />
+    &nbsp;&darr; assembler<br />
+    &nbsp;&darr; linker<br />
+    <tt>name.bin</tt></p>
+  </div>
+
+</td>
+<td id="content">
+
+  <h1>The Compiler</h1>
+
+  <p><tt>seqc_legacy</tt> takes a <tt>main.seq</tt> file through every stage
+  of a real compiler and writes a native executable. The stages talk only
+  through their data: the assembler reads the text the code generator wrote,
+  not its internal structures, and the linker reads only the object.</p>
+
+  <a name="stages"></a>
+  <h2>The eight stages</h2>
+
+  <table class="data" cellspacing="0">
+  <tr><th>Stage</th><th>Source</th><th>What it does</th></tr>
+  <tr><td>Lexer</td><td><tt>src/lexer</tt></td><td>Source text to tokens, one <tt>SourceLine</tt> per line</td></tr>
+  <tr class="odd"><td>Parser</td><td><tt>src/parser</tt></td><td>Tokens to the syntax tree</td></tr>
+  <tr><td>Semantic&nbsp;analysis</td><td><tt>src/sema</tt></td><td>Checks the tree; matches each <tt>ask</tt> to a request and resolves the dataset and filter</td></tr>
+  <tr class="odd"><td>IR</td><td><tt>src/ir</tt></td><td>Lowers requests to <tt>write_file</tt> and <tt>print</tt> operations on constant data; the filter is evaluated here</td></tr>
+  <tr><td>Code&nbsp;generator</td><td><tt>src/codegen</tt></td><td>IR to x86-64 assembly text</td></tr>
+  <tr class="odd"><td>Assembler</td><td><tt>src/assembler</tt></td><td>Assembly text to machine code, symbols and relocations</td></tr>
+  <tr><td>Linker</td><td><tt>src/linker</tt></td><td>Lays out the sections, applies the relocations, writes the ELF file</td></tr>
+  <tr class="odd"><td>Run</td><td><tt>src/driver</tt></td><td>Executes the binary in <tt>output/</tt></td></tr>
+  </table>
+
+  <div class="note"><b>Compile-time evaluation.</b> Because the filter is
+  evaluated at compile time, the generated program only writes bytes that the
+  compiler already computed.</div>
+
+  <a name="ir"></a>
+  <h2>Intermediate form</h2>
+
+  <p>The IR is a list of named constant data blobs and, per step, a list of
+  operations. This is <tt>top3Company.ir</tt>:</p>
+
+<pre>program top3Company
+data d0 = "company.txt\0"
+data d1 = 76 bytes  ; rows 1-5 of sample-company-transaction-db
+data d2 = 82 bytes  ; top 3 of total-revenue-by-company
+step 1 step1:
+  write_file d0, d1
+step 2 step2:
+  print d2</pre>
+
+  <a name="asm"></a>
+  <h2>Generated assembly</h2>
+
+  <p>The generated program is <tt>_start</tt>, one function per step, and a
+  failure exit. It calls the kernel directly (<tt>open</tt>, <tt>write</tt>,
+  <tt>close</tt>, <tt>exit</tt>) and links against nothing. It exits 0, or 70
+  when a system call fails.</p>
+
+<pre>section .text
+global _start
+_start:
+    call seq_step_1
+    call seq_step_2
+    xor edi, edi
+    mov eax, 60            <span class="c">; exit(0)</span>
+    syscall
+seq_fail:
+    mov edi, 70
+    mov eax, 60            <span class="c">; exit(70)</span>
+    syscall
+seq_step_1:
+    lea rdi, [rel d0]
+    mov esi, 577           <span class="c">; O_WRONLY | O_CREAT | O_TRUNC</span>
+    mov edx, 420           <span class="c">; 0644</span>
+    mov eax, 2             <span class="c">; open</span>
+    syscall
+    test rax, rax
+    js seq_fail
+    mov rbx, rax
+    mov rdi, rbx
+    lea rsi, [rel d1]
+    mov edx, 76
+    mov eax, 1             <span class="c">; write</span>
+    syscall
+    test rax, rax
+    js seq_fail
+    mov rdi, rbx
+    mov eax, 3             <span class="c">; close</span>
+    syscall
+    ret
+seq_step_2:
+    mov edi, 1
+    lea rsi, [rel d2]
+    mov edx, 82
+    mov eax, 1             <span class="c">; write</span>
+    syscall
+    test rax, rax
+    js seq_fail
+    ret
+section .rodata
+d0:
+    db "company.txt", 0
+d1:
+    db "ACME,10,25.50", 10, ...
+d2:
+    db "Top 3 total-revenue-by-company:", 10, ...</pre>
+
+  <a name="encodings"></a>
+  <h2>Encoding table</h2>
+
+  <p>The assembler knows nine instructions. Only the registers <tt>rax rcx rdx
+  rbx rsp rbp rsi rdi</tt> and their 32-bit forms are supported, so no REX.R
+  or REX.B bits are needed.</p>
+
+  <table class="data" cellspacing="0">
+  <tr><th>Instruction</th><th>Encoding</th><th>Example</th></tr>
+  <tr><td><tt>mov r32, imm32</tt></td><td><tt>B8+r</tt> imm32</td><td><tt>mov eax, 60</tt> = <tt>B8 3C 00 00 00</tt></td></tr>
+  <tr class="odd"><td><tt>mov r64, r64</tt></td><td><tt>48 89 /r</tt></td><td><tt>mov rbx, rax</tt> = <tt>48 89 C3</tt></td></tr>
+  <tr><td><tt>xor r32, r32</tt></td><td><tt>31 /r</tt></td><td><tt>xor edi, edi</tt> = <tt>31 FF</tt></td></tr>
+  <tr class="odd"><td><tt>test r64, r64</tt></td><td><tt>48 85 /r</tt></td><td><tt>test rax, rax</tt> = <tt>48 85 C0</tt></td></tr>
+  <tr><td><tt>lea r64, [rel sym]</tt></td><td><tt>48 8D /r</tt> + disp32</td><td><tt>lea rdi, [rel d0]</tt> = <tt>48 8D 3D</tt> disp32</td></tr>
+  <tr class="odd"><td><tt>call sym</tt></td><td><tt>E8</tt> rel32</td><td>&nbsp;</td></tr>
+  <tr><td><tt>js sym</tt></td><td><tt>0F 88</tt> rel32</td><td>&nbsp;</td></tr>
+  <tr class="odd"><td><tt>ret</tt></td><td><tt>C3</tt></td><td>&nbsp;</td></tr>
+  <tr><td><tt>syscall</tt></td><td><tt>0F 05</tt></td><td>&nbsp;</td></tr>
+  </table>
+
+  <p>Every symbol reference becomes a relocation; the assembler never resolves
+  one itself. There is one relocation type, PC-relative 32-bit: the four bytes
+  receive <tt>S + A - P</tt>, where S is the symbol address, P is the address
+  of the field and A is the addend.</p>
+
+  <a name="elf"></a>
+  <h2>ELF layout</h2>
+
+  <p>The linker writes one <tt>PT_LOAD</tt> segment, readable and executable,
+  that maps the whole file.</p>
+
+  <table class="data" cellspacing="0">
+  <tr><th width="130">Item</th><th>Value</th></tr>
+  <tr><td>Base address</td><td><tt>0x400000</tt></td></tr>
+  <tr class="odd"><td>ELF header</td><td>offset 0, 64 bytes</td></tr>
+  <tr><td>Program header</td><td>offset 64, 56 bytes, one entry</td></tr>
+  <tr class="odd"><td><tt>.text</tt></td><td>offset <tt>0x80</tt></td></tr>
+  <tr><td><tt>.rodata</tt></td><td>after <tt>.text</tt>, aligned to 16</td></tr>
+  <tr class="odd"><td>Header fields</td><td><tt>ELFCLASS64</tt>, little endian, <tt>ET_EXEC</tt>, <tt>EM_X86_64</tt>, no section headers</td></tr>
+  </table>
+
+  <a name="files"></a>
+  <h2>Files it writes</h2>
+
+  <p><tt>output/</tt> holds only what your program creates. Everything the
+  compiler writes goes in <tt>output/temp/</tt>, so you can read what every
+  stage produced.</p>
+
+<pre>top3Company/
+|-- src/
+|   `-- main.seq
+`-- output/
+    |-- company.txt             written by the program
+    `-- temp/
+        |-- top3Company.tokens  lexer output
+        |-- top3Company.ast     parser output
+        |-- top3Company.ir      intermediate representation
+        |-- top3Company.asm     generated x86-64 assembly
+        |-- top3Company.lst     assembler listing: offsets and bytes
+        `-- top3Company.bin     the ELF executable</pre>
+
+</td>
+</tr>
+<tr>
+<td id="footer" colspan="2">
+  <span class="badge"><b class="orange">XHTML</b><i>1.0</i></span>
+  <span class="badge"><b class="blue">CSS</b><i>2.0</i></span>
+  <span class="badge"><b>LINUX</b><i>x86-64</i></span>
+  <span class="badge"><b class="gray">GCC</b><i>not needed</i></span>
+  <br />
+  Copyright &copy; 2005-2006 Tom J. All rights reserved.<br />
+  Seq Legacy Programming Language &middot; Best viewed at 1024x768 or higher.
+</td>
+</tr>
+</table>
+
+</body>
+</html>

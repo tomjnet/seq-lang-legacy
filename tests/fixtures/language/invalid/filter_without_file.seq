@@ -1,0 +1,7 @@
+name = "demo"
+
+step step1():
+    ask("for-each transaction get 3 top total-revenue-by-company")
+
+step step2():
+    ask("create file company.txt with 5 sample-company-transaction-db")

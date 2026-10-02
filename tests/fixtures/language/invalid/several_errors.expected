@@ -1,0 +1,33 @@
+FILE:1:6: error[E0201]: expected '=' after 'name', found a string
+    name "broken"
+         ^
+    hint: write name = "project_name"
+FILE:4:13: error[E0201]: expected ':' after the step header, found end of line
+    step step1()
+                ^
+    hint: write a step header as: step step_name():
+FILE:7:12: error[E0211]: steps take no parameters
+    step step2(x):
+               ^
+    hint: write a step header as: step step_name():
+FILE:11:9: error[E0204]: ask requires parentheses
+        ask "no parentheses"
+            ^
+    hint: write ask("...")
+FILE:12:5: error[E0212]: only ask("...") statements are allowed inside a step
+        print("hello")
+        ^
+    hint: write ask("...")
+FILE:13:7: error[E0108]: inconsistent indentation: expected 0 or 4 spaces, found 6
+          ask("create file b.txt with 5 sample-company-transaction-db")
+          ^
+    hint: top-level declarations are not indented; ask() statements are indented exactly four spaces
+FILE:15:6: error[E0208]: 'step' is a reserved word and cannot be a step name
+    step step():
+         ^
+    hint: reserved words are model, backend, name, step, and ask
+FILE:18:1: error[E0206]: ask() must be inside a step
+    ask("create file d.txt with 5 sample-company-transaction-db")
+    ^
+    hint: indent it four spaces under a step header
+seqc_legacy: 8 error(s) in FILE
